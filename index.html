@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Flux</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,12 +29,13 @@
 
   <div id="info-overlay">
     <div id="info-content">
-      <h2>how to play flux</h2>
-      <p>slide tiles using arrow keys. merge tiles of the same value to grow them. each move consumes energy. merges restore energy (+2 per merge). avoid running out of energy!</p>
+      <h2>how to play</h2>
+      <p>slide tiles using arrow keys or swipe on mobile. merge tiles of the same value to grow them. each move consumes energy. merges restore energy (+2 per merge). avoid running out of energy!</p>
       <ul>
-        <li><strong>move:</strong> arrow keys</li>
+        <li><strong>move:</strong> arrow keys or swipe</li>
         <li><strong>combine:</strong> merge same-value tiles</li>
         <li><strong>energy:</strong> moves cost 0.5, merges gain 2</li>
+        <li><strong>unstable:</strong> tiles ≥128 become unstable</li>
         <li><strong>goal:</strong> grow tiles without losing all energy</li>
       </ul>
       <button id="close-info">close</button>
@@ -42,7 +44,7 @@
 
   <div id="end-overlay">
     <div id="end-content">
-      <h2>Flux has collapsed!</h2>
+      <h2>flux has collapsed!</h2>
       <p id="end-score">score: 0</p>
       <button id="restart-btn">restart</button>
     </div>

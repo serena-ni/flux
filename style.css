@@ -23,11 +23,13 @@ header {
 h1 {
   font-family: 'JetBrains Mono', monospace;
   margin: 0;
+  color: #7aa2f7;
 }
 
 .subtitle {
   opacity: 0.7;
   font-size: 0.9rem;
+  color: #c0c5ce;
 }
 
 /* energy bar */
@@ -50,11 +52,16 @@ h1 {
 #energy-label {
   font-size: 0.75rem;
   opacity: 0.6;
+  text-transform: uppercase;
 }
 
 /* canvas */
 canvas {
   display: block;
+  margin: 0 auto;
+  background: #0f1320;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
 /* footer */
@@ -62,6 +69,7 @@ footer {
   padding: 10px;
   font-size: 0.8rem;
   opacity: 0.6;
+  text-align: center;
 }
 
 /* info button */
@@ -69,13 +77,25 @@ footer {
   position: fixed;
   top: 16px;
   right: 16px;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid #444;
-  background: transparent;
-  color: #e6e9ef;
+  background: linear-gradient(145deg, #0f1320, #131826);
+  color: #7aa2f7;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 1.1rem;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: all 0.2s ease;
+}
+
+#info-btn:hover {
+  background: linear-gradient(145deg, #131826, #171c30);
+  color: #9ece6a;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
 /* overlays */
@@ -83,10 +103,11 @@ footer {
 #end-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.7);
   display: none;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 }
 
 #info-overlay.show,
@@ -100,9 +121,9 @@ footer {
 }
 
 @keyframes overloadPulse {
-  0% { background: rgba(0,0,0,0.55); }
-  50% { background: rgba(0,0,0,0.75); }
-  100% { background: rgba(0,0,0,0.55); }
+  0% { background: rgba(0,0,0,0.65); }
+  50% { background: rgba(0,0,0,0.85); }
+  100% { background: rgba(0,0,0,0.65); }
 }
 
 /* overlay content */
@@ -113,12 +134,15 @@ footer {
   border-radius: 14px;
   max-width: 320px;
   text-align: center;
+  color: #e6e9ef;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
 }
 
 #info-content h2,
 #end-content h2 {
   font-family: 'JetBrains Mono', monospace;
   margin-top: 0;
+  color: #7aa2f7;
 }
 
 /* unstable tile flicker */
@@ -130,4 +154,45 @@ footer {
   0%   { filter: drop-shadow(0 0 0 rgba(255,120,120,0)); }
   50%  { filter: drop-shadow(0 0 8px rgba(255,120,120,0.6)); }
   100% { filter: drop-shadow(0 0 0 rgba(255,120,120,0)); }
+}
+
+/* --- mobile support --- */
+@media (max-width: 600px) {
+  header {
+    padding: 8px 0;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+  }
+
+  #energy-bar {
+    width: 160px;
+  }
+
+  #info-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  #info-content,
+  #end-content {
+    width: 90%;
+    padding: 20px;
+  }
+
+  footer {
+    font-size: 0.7rem;
+  }
+}
+
+/* prevent touch highlight and scrolling */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
