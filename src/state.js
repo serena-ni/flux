@@ -11,17 +11,17 @@ function spawnTile() {
   state.grid.forEach((row,y)=>row.forEach((cell,x)=>{if(!cell) empties.push({x,y});}));
   if(!empties.length) return;
 
-  const {x,y}=empties[Math.floor(Math.random()*empties.length)];
-  const value = Math.random()<0.9?2:4;
-  const tile = {x,y,px:x,py:y,value,unstable:false};
-  state.grid[y][x]=tile;
+  const {x,y} = empties[Math.floor(Math.random()*empties.length)];
+  const value = Math.random() < 0.9 ? 2 : 4;
+  const tile = {x,y,px:x,py:y,value,unstable:false, mergePulse:0};
+  state.grid[y][x] = tile;
   state.tiles.push(tile);
-  state.energy=Math.max(0,state.energy-0.5);
+  state.energy = Math.max(0,state.energy-0.5);
 }
 
 function reset() {
   state.grid = emptyGrid();
-  state.tiles=[];
+  state.tiles = [];
   state.energy = MAX_ENERGY;
   spawnTile();
   spawnTile();
@@ -30,8 +30,11 @@ function reset() {
 function moveTiles() {
   const speed = 0.2;
   state.tiles.forEach(tile => {
-    tile.px += (tile.x-tile.px)*speed;
-    tile.py += (tile.y-tile.py)*speed;
+    tile.px += (tile.x - tile.px)*speed;
+    tile.py += (tile.y - tile.py)*speed;
+
+    // reduce mergePulse smoothly
+    if(tile.mergePulse>0) tile.mergePulse = Math.max(0, tile.mergePulse - 0.05);
   });
 }
 
@@ -55,9 +58,10 @@ function move(direction){
           }else if(target.value===tile.value && !mergedThisMove.has(target)){
             target.value*=2;
             target.unstable = target.value>=16;
+            target.mergePulse = 1; // trigger pulse animation
             state.grid[y][x]=null;
             mergedThisMove.add(target);
-            state.energy=Math.max(0,state.energy-1);
+            state.energy = Math.min(MAX_ENERGY, state.energy + 2); // gain energy on merge
             break;
           }else break;
         }

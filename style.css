@@ -7,7 +7,7 @@ body {
   justify-content: center;
   align-items: flex-start;
   height: 100vh;
-  overflow: hidden; /* prevent scrolling */
+  overflow: hidden;
 }
 
 #app {
@@ -21,7 +21,6 @@ body {
 }
 
 header {
-  position: relative;
   text-align: center;
   flex-shrink: 0;
 }
@@ -38,26 +37,6 @@ header h1 {
   margin: 5px 0 15px 0;
   font-size: 1rem;
 }
-
-#info-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 500;
-  font-size: 1.2rem;
-  color: #e0e5f0;
-  background: #1c1f34;
-  border: none;
-  border-radius: 6px;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-}
-
-#info-btn:hover { background: #4b7fcf; transform: scale(1.1); }
-#info-btn:active { transform: scale(0.95); }
 
 #energy-bar {
   width: 80%;
@@ -85,7 +64,7 @@ canvas {
   background: #121528;
   border-radius: 12px;
   flex-shrink: 1;
-  width: 90vmin; /* scale with viewport */
+  width: 90vmin;
   height: 90vmin;
   max-width: 100%;
   max-height: 100%;
@@ -99,9 +78,33 @@ footer {
   font-weight: 300;
 }
 
+#info-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: #e0e5f0;
+  background: #1c1f34;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s ease, transform 0.1s ease;
+  z-index: 1000;
+}
+
+#info-btn:hover { background: #4b7fcf; transform: scale(1.1); }
+#info-btn:active { transform: scale(0.95); }
+
 #info-overlay {
   position: fixed;
-  top: 0; left: 0;
+  top: 0; left:0;
   width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.9);
   display: none;

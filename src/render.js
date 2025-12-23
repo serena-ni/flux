@@ -37,22 +37,24 @@ function drawTiles(state){
   state.tiles.forEach(tile=>{
     const px = tile.px*(TILE_SIZE+GAP)+GAP;
     const py = tile.py*(TILE_SIZE+GAP)+GAP;
-    const scale = 1 + (tile.unstable?Math.sin(performance.now()/200)*0.05:0);
+
+    const pulse = 1 + tile.mergePulse*0.2; // pulse scale for merges
+    const scale = pulse + (tile.unstable ? Math.sin(performance.now()/200)*0.05 : 0);
 
     ctx.save();
     ctx.translate(px+TILE_SIZE/2, py+TILE_SIZE/2);
     ctx.scale(scale, scale);
     ctx.translate(-TILE_SIZE/2, -TILE_SIZE/2);
 
-    ctx.fillStyle=tile.unstable?'#4b5c7f':'#1e2235';
-    ctx.shadowBlur=tile.unstable?8:4;
+    ctx.fillStyle = tile.unstable ? '#4b5c7f' : '#1e2235';
+    ctx.shadowBlur = tile.unstable ? 8 : 4;
     ctx.shadowColor='rgba(0,0,0,0.3)';
     drawRoundedRect(ctx,0,0,TILE_SIZE,TILE_SIZE,12);
 
-    ctx.fillStyle='#e0e5f0';
-    ctx.font='500 32px JetBrains Mono';
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
+    ctx.fillStyle = '#e0e5f0';
+    ctx.font = '500 32px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText(tile.value,TILE_SIZE/2,TILE_SIZE/2);
 
     ctx.restore();
