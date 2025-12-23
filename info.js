@@ -1,9 +1,17 @@
+import { reset } from './src/state.js';
+
 export function initInfo(){
-  const infoBtn = document.getElementById('info-btn');
+  const btn = document.getElementById('info-btn');
   const overlay = document.getElementById('info-overlay');
   const closeBtn = document.getElementById('close-info');
 
-  infoBtn.addEventListener('click', () => overlay.style.display='flex');
-  closeBtn.addEventListener('click', () => overlay.style.display='none');
-  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.style.display='none'; });
+  btn.addEventListener('click',()=>overlay.style.display='flex');
+  closeBtn.addEventListener('click',()=>overlay.style.display='none');
+
+  const restartBtn = document.getElementById('restart-btn');
+  restartBtn.addEventListener('click', ()=>{
+    overlay.style.display='none';
+    document.getElementById('end-overlay').style.display='none';
+    reset();
+  });
 }

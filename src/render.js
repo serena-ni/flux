@@ -34,11 +34,12 @@ function drawRoundedRect(ctx,x,y,w,h,r){
 }
 
 function drawTiles(state){
+  const shake = state.energy < 5 ? (Math.random()-0.5)*5 : 0;
   state.tiles.forEach(tile=>{
-    const px = tile.px*(TILE_SIZE+GAP)+GAP;
-    const py = tile.py*(TILE_SIZE+GAP)+GAP;
+    const px = tile.px*(TILE_SIZE+GAP)+GAP + shake;
+    const py = tile.py*(TILE_SIZE+GAP)+GAP + shake;
 
-    const pulse = 1 + tile.mergePulse*0.2; // pulse scale for merges
+    const pulse = 1 + tile.mergePulse*0.2;
     const scale = pulse + (tile.unstable ? Math.sin(performance.now()/200)*0.05 : 0);
 
     ctx.save();
@@ -59,6 +60,14 @@ function drawTiles(state){
 
     ctx.restore();
   });
+
+  const bgIntensity = Math.max(0, state.energy/MAX_ENERGY);
+  canvas.style.background = `rgb(${18*bgIntensity}, ${18*bgIntensity}, ${40*bgIntensity + 8})`;
+
+  if(state.gameOver){
+    document.getElementById('end-score').innerText = `score: ${Math.max(...state.tiles.map(t=>t.value)) || 0}`;
+    document.getElementById('end-overlay').style.display='flex';
+  }
 }
 
 function updateEnergyBar(state){

@@ -1,6 +1,6 @@
 import { GRID_SIZE, MAX_ENERGY } from './constants.js';
 
-const state = { grid: [], tiles: [], energy: MAX_ENERGY };
+const state = { grid: [], tiles: [], energy: MAX_ENERGY, gameOver: false };
 
 function emptyGrid() {
   return Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(null));
@@ -25,6 +25,7 @@ function reset() {
   state.grid = emptyGrid();
   state.tiles = [];
   state.energy = MAX_ENERGY;
+  state.gameOver = false;
   spawnTile();
   spawnTile();
 }
@@ -35,15 +36,17 @@ function moveTiles() {
     tile.px += (tile.x - tile.px) * speed;
     tile.py += (tile.y - tile.py) * speed;
 
-    // reduce mergePulse smoothly
     if (tile.mergePulse > 0) tile.mergePulse = Math.max(0, tile.mergePulse - 0.05);
   });
+
+  if (state.energy <= 0 && !state.gameOver) {
+    state.gameOver = true;
+  }
 }
 
 function move(direction) {
   const mergedThisMove = new Set();
   const range = [...Array(GRID_SIZE).keys()];
-
   let moved = false;
 
   const traverse = (xOrder, yOrder, dx, dy) => {
@@ -64,19 +67,14 @@ function move(direction) {
             x = nx; y = ny;
             moved = true;
           } else if (target.value === tile.value && !mergedThisMove.has(target)) {
-            // Merge tiles
             target.value *= 2;
             target.unstable = target.value >= 16;
             target.mergePulse = 1;
             state.grid[y][x] = null;
             mergedThisMove.add(target);
 
-            // Remove old tile from tiles array
             state.tiles = state.tiles.filter(t => t !== tile);
-
-            // Gain energy
             state.energy = Math.min(MAX_ENERGY, state.energy + 2);
-
             moved = true;
             break;
           } else break;
