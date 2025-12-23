@@ -1,0 +1,77 @@
+:root {
+  --bg: #0b0f14;
+  --panel: #111826;
+  --tile: #1b2436;
+  --glow: #7dd3fc;
+  --danger: #fb7185;
+  --text: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0e1625, #05070a);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#app {
+  background: var(--panel);
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  width: 420px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.subtitle {
+  opacity: 0.6;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+#energy-bar {
+  margin: 14px auto 6px;
+  width: 80%;
+  height: 8px;
+  background: #0a0f18;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#energy-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
+  transition: width 0.3s ease;
+}
+
+#energy-label {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+canvas {
+  margin-top: 20px;
+  background: #0a0f18;
+  border-radius: 12px;
+}
+
+footer {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  opacity: 0.5;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flux</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Flux</h1>
+      <p class="subtitle">an energy-based sliding puzzle</p>
+      <div id="energy-bar">
+        <div id="energy-fill"></div>
+      </div>
+      <div id="energy-label">Energy</div>
+    </header>
+
+    <canvas id="game" width="360" height="360"></canvas>
+
+    <footer>
+      <p>Manage growth. Prevent collapse.</p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initInput } from './src/input.js';
+    import { render } from './src/render.js';
+    import { state } from './src/state.js';
+
+    function loop() {
+      render(state);
+      requestAnimationFrame(loop);
+    }
+
+    initInput();
+    loop();
+  </script>
+</body>
+</html>
