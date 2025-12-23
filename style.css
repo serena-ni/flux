@@ -102,10 +102,10 @@ footer {
 #info-btn:hover { background: #4b7fcf; transform: scale(1.1); }
 #info-btn:active { transform: scale(0.95); }
 
-#info-overlay {
+#info-overlay, #end-overlay {
   position: fixed;
-  top: 0; left:0;
-  width: 100vw; height: 100vh;
+  top:0; left:0;
+  width:100vw; height:100vh;
   background: rgba(0,0,0,0.9);
   display: none;
   justify-content: center;
@@ -113,7 +113,7 @@ footer {
   z-index: 1000;
 }
 
-#info-content {
+#info-content, #end-content {
   background: #1c1f34;
   padding: 25px 35px;
   border-radius: 12px;
@@ -126,14 +126,14 @@ footer {
   gap: 12px;
 }
 
-#info-content h2 {
+#info-content h2, #end-content h2 {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 500;
   font-size: 1.8rem;
   margin: 0 0 8px 0;
 }
 
-#info-content p {
+#info-content p, #end-content p {
   font-size: 0.95rem;
   line-height: 1.4;
   margin: 0;
@@ -149,7 +149,7 @@ footer {
   margin-bottom: 5px;
 }
 
-#info-content button {
+#info-content button, #end-content button {
   align-self: flex-end;
   margin-top: 10px;
   padding: 6px 12px;
