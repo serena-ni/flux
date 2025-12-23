@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Flux</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="app">
@@ -14,11 +14,8 @@
       <h1>flux</h1>
       <p class="subtitle">an energy-based sliding puzzle</p>
       <button id="info-btn">i</button>
-
-      <div id="energy-bar">
-        <div id="energy-fill"></div>
-      </div>
-      <div id="energy-label">Energy</div>
+      <div id="energy-bar"><div id="energy-fill"></div></div>
+      <div id="energy-label">energy</div>
     </header>
 
     <canvas id="game"></canvas>
@@ -28,43 +25,56 @@
     </footer>
   </div>
 
-  <!-- info overlay -->
   <div id="info-overlay">
     <div id="info-content">
       <h2>how to play</h2>
-      <p>
-        Flux is an energy-based sliding puzzle inspired by 2048. Slide tiles
-        using the arrow keys to combine tiles of the same value. Each merge
-        increases the tile value and consumes energy. Tiles that become too
-        large are unstable and drain extra energy.
-      </p>
-      <ul>
-        <li><strong>move:</strong> Use arrow keys to slide tiles.</li>
-        <li><strong>combine:</strong> Merge two tiles of the same value to form a bigger tile.</li>
-        <li><strong>energy:</strong> Each move and merge costs energy. Keep your energy above 0!</li>
-        <li><strong>unstable tiles:</strong> Tiles above a certain value pulse subtly and drain energy faster.</li>
-        <li><strong>goal:</strong> Grow tiles strategically without running out of energy.</li>
+      <p>slide tiles using arrow keys. merge tiles of the same value to grow them. each move consumes energy. avoid running out of energy!</p>
+      <ul><br>
+        <li><strong>move:</strong> arrow keys</li>
+        <li><strong>combine:</strong> merge same-value tiles</li>
+        <li><strong>energy:</strong> moves and merges consume energy</li>
+        <li><strong>goal:</strong> grow tiles without losing all energy</li>
       </ul>
-      <button id="close-info">Close</button>
+      <button id="close-info">close</button>
     </div>
   </div>
 
   <script type="module">
-    import { state, reset, spawnTile, moveTiles } from './src/state.js';
-    import { render } from './src/render.js';
-    import { initInput } from './src/input.js';
-    import { initInfo } from './src/info.js';
+  import { state, reset, moveTiles, move } from './src/state.js';
+  import { render } from './src/render.js';
+  import { initInput } from './src/input.js';
+  import { initInfo } from './info.js';
 
-    function loop() {
-      moveTiles(); // animate sliding
-      render(state);
-      requestAnimationFrame(loop);
-    }
+  reset();
+  initInput();
+  initInfo();
 
-    reset();
-    initInput();
-    initInfo();
-    loop();
-  </script>
+  const canvas = document.getElementById('game');
+
+  function resizeCanvas() {
+    const headerHeight = document.querySelector('header').offsetHeight;
+    const footerHeight = document.querySelector('footer').offsetHeight;
+    const padding = 40; // extra margin
+    const availableHeight = window.innerHeight - headerHeight - footerHeight - padding;
+    const availableWidth = window.innerWidth - padding;
+
+    const size = Math.min(availableWidth, availableHeight);
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function loop() {
+    moveTiles();
+    render(state);
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+</script>
+
+
 </body>
 </html>

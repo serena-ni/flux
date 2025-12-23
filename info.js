@@ -1,4 +1,4 @@
-export function initInfo() {
+export function initInfo(){
   const infoBtn = document.getElementById('info-btn');
   const overlay = document.getElementById('info-overlay');
   const closeBtn = document.getElementById('close-info');
