@@ -9,10 +9,11 @@ export function render(state) {
   drawGrid();
   drawTiles(state);
   updateEnergyBar(state);
+  updateCanvasShadow(state);
 }
 
 function drawGrid() {
-  ctx.fillStyle = '#0f1624';
+  ctx.fillStyle = '#0a1020';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -24,17 +25,27 @@ function drawTiles(state) {
       const px = x * (TILE_SIZE + GAP) + GAP;
       const py = y * (TILE_SIZE + GAP) + GAP;
 
-      ctx.fillStyle = tile.unstable ? '#2b1d2e' : '#1b2436';
+      const pulse = tile.unstable
+        ? 1 + Math.sin(performance.now() / 120) * 0.03
+        : 1;
+
+      ctx.save();
+      ctx.translate(px + TILE_SIZE / 2, py + TILE_SIZE / 2);
+      ctx.scale(pulse, pulse);
+      ctx.translate(-TILE_SIZE / 2, -TILE_SIZE / 2);
+
+      ctx.fillStyle = tile.unstable ? '#2a1c2e' : '#16203a';
       ctx.shadowBlur = tile.unstable ? 20 : 0;
       ctx.shadowColor = tile.unstable ? '#fb7185' : 'transparent';
 
       ctx.beginPath();
-      ctx.roundRect(px, py, TILE_SIZE, TILE_SIZE, 12);
+      ctx.roundRect(0, 0, TILE_SIZE, TILE_SIZE, 12);
       ctx.fill();
+      ctx.restore();
 
-      ctx.shadowBlur = 0;
+      // Tile number
       ctx.fillStyle = '#e5e7eb';
-      ctx.font = '20px system-ui';
+      ctx.font = '500 22px JetBrains Mono';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(tile.value, px + TILE_SIZE / 2, py + TILE_SIZE / 2);
@@ -44,5 +55,23 @@ function drawTiles(state) {
 
 function updateEnergyBar(state) {
   const fill = document.getElementById('energy-fill');
-  fill.style.width = `${(state.energy / MAX_ENERGY) * 100}%`;
+  const pct = state.energy / MAX_ENERGY;
+  fill.style.width = `${pct * 100}%`;
+
+  if (pct < 0.35) {
+    fill.style.background =
+      'linear-gradient(90deg, #fb7185, #f43f5e)';
+  } else {
+    fill.style.background =
+      'linear-gradient(90deg, #7dd3fc, #38bdf8)';
+  }
+}
+
+function updateCanvasShadow(state) {
+  if (state.energy < 30) {
+    canvas.style.boxShadow =
+      '0 0 30px rgba(251,113,133,0.15)';
+  } else {
+    canvas.style.boxShadow = 'none';
+  }
 }

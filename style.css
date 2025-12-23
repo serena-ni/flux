@@ -1,21 +1,27 @@
 :root {
-  --bg: #0b0f14;
-  --panel: #111826;
-  --tile: #1b2436;
-  --glow: #7dd3fc;
-  --danger: #fb7185;
-  --text: #e5e7eb;
+  --bg: #070b11;
+  --panel: #0d1422;
+  --grid: #0a1020;
+
+  --tile-stable: #16203a;
+  --tile-unstable: #2a1c2e;
+
+  --energy-cool: #7dd3fc;
+  --energy-hot: #fb7185;
+
+  --text-main: #e5e7eb;
+  --text-muted: rgba(229,231,235,0.6);
 }
 
 * {
   box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  font-family: 'Inter', system-ui, -apple-system;
 }
 
 body {
   margin: 0;
   background: radial-gradient(circle at top, #0e1625, #05070a);
-  color: var(--text);
+  color: var(--text-main);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,8 +61,10 @@ h1 {
 #energy-fill {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, #7dd3fc, #38bdf8);
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--energy-cool), #38bdf8);
+  transition:
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s ease;
 }
 
 #energy-label {
@@ -66,12 +74,24 @@ h1 {
 
 canvas {
   margin-top: 20px;
-  background: #0a0f18;
+  background: var(--grid);
   border-radius: 12px;
+  transition: box-shadow 0.3s ease;
 }
 
 footer {
   margin-top: 16px;
   font-size: 0.75rem;
   opacity: 0.5;
+  letter-spacing: 0.04em;
+}
+
+@keyframes nudge {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.985); }
+  100% { transform: scale(1); }
+}
+
+canvas.nudge {
+  animation: nudge 120ms ease-out;
 }
