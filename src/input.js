@@ -1,22 +1,12 @@
-import { move } from './merge.js';
-import { state } from './state.js';
-
-const canvas = document.getElementById('game');
+import { move } from './state.js';
 
 export function initInput() {
   window.addEventListener('keydown', e => {
-    if (state.energy <= 0) return;
-
-    let moved = false;
-    if (e.key === 'ArrowUp') { move('up'); moved = true; }
-    if (e.key === 'ArrowDown') { move('down'); moved = true; }
-    if (e.key === 'ArrowLeft') { move('left'); moved = true; }
-    if (e.key === 'ArrowRight') { move('right'); moved = true; }
-
-    if (moved) {
-      canvas.classList.remove('nudge');
-      void canvas.offsetWidth;
-      canvas.classList.add('nudge');
+    switch(e.key){
+      case 'ArrowUp': move('up'); break;
+      case 'ArrowDown': move('down'); break;
+      case 'ArrowLeft': move('left'); break;
+      case 'ArrowRight': move('right'); break;
     }
   });
 }

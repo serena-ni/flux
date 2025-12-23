@@ -1,4 +1,5 @@
 import { GRID_SIZE, TILE_SIZE, GAP, MAX_ENERGY } from './constants.js';
+import { state } from './state.js';
 
 const canvas = document.getElementById('game');
 canvas.width = GRID_SIZE * TILE_SIZE + (GRID_SIZE + 1) * GAP;
@@ -7,15 +8,13 @@ const ctx = canvas.getContext('2d');
 
 export function render(state) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   drawGrid();
   drawTiles(state);
   updateEnergyBar(state);
-  updateCanvasGlow(state);
 }
 
 function drawGrid() {
-  ctx.fillStyle = '#0b0d1c';
+  ctx.fillStyle = '#121528';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -35,60 +34,35 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 }
 
 function drawTiles(state) {
-  state.grid.forEach((row, y) =>
-    row.forEach((tile, x) => {
-      if (!tile) return;
+  state.tiles.forEach(tile => {
+    const px = tile.px * (TILE_SIZE + GAP) + GAP;
+    const py = tile.py * (TILE_SIZE + GAP) + GAP;
 
-      const px = x * (TILE_SIZE + GAP) + GAP;
-      const py = y * (TILE_SIZE + GAP) + GAP;
+    const scale = 1 + (tile.unstable ? Math.sin(performance.now() / 200) * 0.02 : 0);
 
-      const pulse = tile.unstable
-        ? 1 + Math.sin(performance.now() / 100) * 0.07
-        : 1;
+    ctx.save();
+    ctx.translate(px + TILE_SIZE/2, py + TILE_SIZE/2);
+    ctx.scale(scale, scale);
+    ctx.translate(-TILE_SIZE/2, -TILE_SIZE/2);
 
-      ctx.save();
-      ctx.translate(px + TILE_SIZE / 2, py + TILE_SIZE / 2);
-      ctx.scale(pulse, pulse);
-      ctx.translate(-TILE_SIZE / 2, -TILE_SIZE / 2);
+    ctx.fillStyle = tile.unstable ? '#4b5c7f' : '#1e2235';
+    ctx.shadowBlur = tile.unstable ? 6 : 4;
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    drawRoundedRect(ctx, 0,0,TILE_SIZE,TILE_SIZE,12);
 
-      // Tile rectangle
-      ctx.fillStyle = tile.unstable ? '#ff3f8e' : '#1b1f34';
-      ctx.shadowBlur = tile.unstable ? 18 : 6;
-      ctx.shadowColor = tile.unstable ? '#ff3f8e' : '#00f0ff';
-      drawRoundedRect(ctx, 0, 0, TILE_SIZE, TILE_SIZE, 12);
+    ctx.fillStyle = '#e0e5f0';
+    ctx.font = '500 28px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(tile.value, TILE_SIZE/2, TILE_SIZE/2);
 
-      // Tile number
-      ctx.fillStyle = '#e0e5ff';
-      ctx.font = '500 22px JetBrains Mono';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(tile.value, TILE_SIZE / 2, TILE_SIZE / 2);
-
-      ctx.restore();
-    })
-  );
+    ctx.restore();
+  });
 }
 
-function updateEnergyBar(state) {
+function updateEnergyBar(state){
   const fill = document.getElementById('energy-fill');
   const pct = state.energy / MAX_ENERGY;
-  fill.style.width = `${pct * 100}%`;
-
-  if (pct < 0.35) {
-    fill.style.background =
-      'linear-gradient(90deg, #ff3f8e, #ff1f70)';
-  } else {
-    fill.style.background =
-      'linear-gradient(90deg, #00f0ff, #00c0ff)';
-  }
-}
-
-function updateCanvasGlow(state) {
-  if (state.energy < 30) {
-    canvas.style.boxShadow =
-      '0 0 40px rgba(255,63,142,0.25)';
-  } else {
-    canvas.style.boxShadow =
-      '0 0 30px rgba(0,240,255,0.15)';
-  }
+  fill.style.width = `${pct*100}%`;
+  fill.style.background = `linear-gradient(90deg, #6ab5ff, #4b7fcf)`;
 }
