@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flux</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Flux</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
   <div id="info-overlay">
     <div id="info-content">
       <h2>how to play</h2>
-      <p>slide tiles using arrow keys or swipe on mobile. merge tiles of the same value to grow them. each move consumes energy. merges restore energy (+2 per merge). avoid running out of energy!</p>
+      <p>slide tiles using arrow keys or swipe. merge tiles of the same value to grow them. each move consumes energy. merges restore energy (+2 per merge). avoid running out of energy!</p>
       <ul>
         <li><strong>move:</strong> arrow keys or swipe</li>
         <li><strong>combine:</strong> merge same-value tiles</li>
@@ -61,16 +61,17 @@
     initInfo();
 
     const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
 
     function resizeCanvas() {
       const headerHeight = document.querySelector('header').offsetHeight;
       const footerHeight = document.querySelector('footer').offsetHeight;
-      const padding = 40;
+      const padding = 32;
       const availableHeight = window.innerHeight - headerHeight - footerHeight - padding;
       const availableWidth = window.innerWidth - padding;
       const size = Math.min(availableWidth, availableHeight);
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
+      canvas.width = size;
+      canvas.height = size;
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -78,7 +79,7 @@
 
     function loop() {
       moveTiles();
-      render(state);
+      render(state, canvas);
       requestAnimationFrame(loop);
     }
 
