@@ -1,6 +1,6 @@
 import { MOVE_COST } from './constants.js';
 import { mergeCost, updateInstability } from './energy.js';
-import { state } from './state.js';
+import { state, spawnTile } from './state.js';
 
 function slide(row) {
   return row.filter(Boolean);
@@ -25,9 +25,12 @@ function operate(row) {
 }
 
 export function move(dir) {
+  const prevGrid = JSON.stringify(state.grid);
+
   state.energy -= MOVE_COST;
   let rotated = false;
 
+  // rotate grid for up/down
   if (dir === 'up' || dir === 'down') {
     state.grid = transpose(state.grid);
     rotated = true;
@@ -36,6 +39,7 @@ export function move(dir) {
     state.grid = state.grid.map(row => row.reverse());
   }
 
+  // apply merge/slide
   state.grid = state.grid.map(operate);
 
   if (dir === 'right' || dir === 'down') {
@@ -43,7 +47,13 @@ export function move(dir) {
   }
   if (rotated) state.grid = transpose(state.grid);
 
-  updateInstability(state);
+  // spawn tile only if move changed grid
+  if (JSON.stringify(state.grid) !== prevGrid) {
+    updateInstability(state);
+    spawnTile();
+  } else {
+    updateInstability(state);
+  }
 }
 
 function transpose(matrix) {

@@ -1,6 +1,6 @@
 import { GRID_SIZE, MAX_ENERGY } from './constants.js';
 
-export const state = {
+const state = {
   grid: [],
   energy: MAX_ENERGY,
 };
@@ -11,7 +11,8 @@ function emptyGrid() {
   );
 }
 
-function addRandomTile() {
+// spawn a new tile
+function spawnTile() {
   const empties = [];
   state.grid.forEach((row, y) =>
     row.forEach((cell, x) => {
@@ -22,14 +23,21 @@ function addRandomTile() {
   if (!empties.length) return;
 
   const { x, y } = empties[Math.floor(Math.random() * empties.length)];
-  state.grid[y][x] = { value: 2, unstable: false };
+  const value = Math.random() < 0.9 ? 2 : 4;
+  state.grid[y][x] = { value, unstable: false };
+
+  // energy cost
+  state.energy = Math.max(0, state.energy - 0.5);
 }
 
-export function reset() {
+// reset the board
+function reset() {
   state.grid = emptyGrid();
   state.energy = MAX_ENERGY;
-  addRandomTile();
-  addRandomTile();
+  spawnTile();
+  spawnTile();
 }
 
 reset();
+
+export { state, spawnTile, reset };
