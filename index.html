@@ -44,38 +44,23 @@
 
   <div id="end-overlay">
     <div id="end-content">
-      <h2>flux has collapsed!</h2>
+      <h2>game over!</h2>
       <p id="end-score">score: 0</p>
       <button id="restart-btn">restart</button>
     </div>
   </div>
 
   <script type="module">
-    import { state, reset, moveTiles, move } from './src/state.js';
+    import { state, reset, moveTiles } from './src/state.js';
     import { render } from './src/render.js';
     import { initInput } from './src/input.js';
     import { initInfo } from './info.js';
 
+    const canvas = document.getElementById('game');
+
     reset();
     initInput();
     initInfo();
-
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      const headerHeight = document.querySelector('header').offsetHeight;
-      const footerHeight = document.querySelector('footer').offsetHeight;
-      const padding = 32;
-      const availableHeight = window.innerHeight - headerHeight - footerHeight - padding;
-      const availableWidth = window.innerWidth - padding;
-      const size = Math.min(availableWidth, availableHeight);
-      canvas.width = size;
-      canvas.height = size;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
     function loop() {
       moveTiles();

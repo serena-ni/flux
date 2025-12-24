@@ -6,7 +6,6 @@ const state = {
   tiles: [],
   energy: MAX_ENERGY,
   gameOver: false,
-  overload: false,
 };
 
 function emptyGrid() {
@@ -46,7 +45,6 @@ function reset() {
   state.tiles = [];
   state.energy = MAX_ENERGY;
   state.gameOver = false;
-  state.overload = false;
   spawnTile();
   spawnTile();
 }
@@ -57,63 +55,50 @@ function moveTiles() {
   state.tiles.forEach(tile => {
     tile.px += (tile.x - tile.px) * speed;
     tile.py += (tile.y - tile.py) * speed;
-    if (tile.mergePulse > 0) {
-      tile.mergePulse = Math.max(0, tile.mergePulse - 0.05);
-    }
+    tile.mergePulse = Math.max(0, tile.mergePulse - 0.05);
   });
 
-  if (state.energy <= 0 && !state.gameOver) {
+  if (state.energy <= 0) {
     state.gameOver = true;
   }
 }
 
-function checkOverload() {
-  let hasMove = false;
-
+function noMovesLeft() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
       const t = state.grid[y][x];
-      if (!t) return; // empty exists -> no overload
+      if (!t) return false;
 
-      const neighbors = [
-        [x + 1, y],
-        [x, y + 1],
-      ];
-
-      for (const [nx, ny] of neighbors) {
-        if (
-          nx < GRID_SIZE &&
-          ny < GRID_SIZE &&
-          state.grid[ny][nx]?.value === t.value
-        ) {
-          hasMove = true;
-        }
+      if (
+        (x < GRID_SIZE - 1 && state.grid[y][x + 1]?.value === t.value) ||
+        (y < GRID_SIZE - 1 && state.grid[y + 1][x]?.value === t.value)
+      ) {
+        return false;
       }
     }
   }
-
-  if (!hasMove) state.overload = true;
+  return true;
 }
 
 function move(direction) {
-  if (state.gameOver || state.overload) return;
+  if (state.gameOver) return;
 
-  const mergedThisMove = new Set();
+  const merged = new Set();
   let moved = false;
 
   const range = [...Array(GRID_SIZE).keys()];
-  const orders = {
+  const dirs = {
     up: [range, range, 0, -1],
     down: [range, range.slice().reverse(), 0, 1],
     left: [range, range, -1, 0],
     right: [range.slice().reverse(), range, 1, 0],
   };
 
-  const [xOrder, yOrder, dx, dy] = orders[direction];
+  const [xOrder, yOrder, dx, dy] = dirs[direction];
 
   for (let yi of yOrder) {
     for (let xi of xOrder) {
-      let tile = state.grid[yi][xi];
+      const tile = state.grid[yi][xi];
       if (!tile) continue;
 
       let x = xi;
@@ -122,13 +107,7 @@ function move(direction) {
       while (true) {
         const nx = x + dx;
         const ny = y + dy;
-        if (
-          nx < 0 ||
-          nx >= GRID_SIZE ||
-          ny < 0 ||
-          ny >= GRID_SIZE
-        )
-          break;
+        if (nx < 0 || ny < 0 || nx >= GRID_SIZE || ny >= GRID_SIZE) break;
 
         const target = state.grid[ny][nx];
 
@@ -140,9 +119,8 @@ function move(direction) {
           moved = true;
         } else if (
           target.value === tile.value &&
-          !mergedThisMove.has(target) &&
-          !target.unstable &&
-          !tile.unstable
+          !merged.has(target) &&
+          !target.unstable
         ) {
           target.value *= 2;
           target.mergePulse = 1;
@@ -152,7 +130,7 @@ function move(direction) {
 
           state.grid[y][x] = null;
           state.tiles = state.tiles.filter(t => t !== tile);
-          mergedThisMove.add(target);
+          merged.add(target);
           moved = true;
           break;
         } else break;
@@ -169,7 +147,10 @@ function move(direction) {
   }
 
   updateInstability(state);
-  checkOverload();
+
+  if (noMovesLeft()) {
+    state.gameOver = true;
+  }
 }
 
-export { state, reset, spawnTile, moveTiles, move };
+export { state, reset, moveTiles, move };
