@@ -58,7 +58,8 @@ function moveTiles() {
     tile.mergePulse = Math.max(0, tile.mergePulse - 0.05);
   });
 
-  if (state.energy <= 0) {
+  // game over if energy is 0 or no moves left
+  if (state.energy <= 0 || noMovesLeft()) {
     state.gameOver = true;
   }
 }
@@ -66,18 +67,19 @@ function moveTiles() {
 function noMovesLeft() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
-      const t = state.grid[y][x];
-      if (!t) return false;
+      const tile = state.grid[y][x];
+      if (!tile) return false; // empty cell -> moves possible
 
+      // check right and down neighbors for merge possibility
       if (
-        (x < GRID_SIZE - 1 && state.grid[y][x + 1]?.value === t.value) ||
-        (y < GRID_SIZE - 1 && state.grid[y + 1][x]?.value === t.value)
+        (x < GRID_SIZE - 1 && state.grid[y][x + 1]?.value === tile.value) ||
+        (y < GRID_SIZE - 1 && state.grid[y + 1][x]?.value === tile.value)
       ) {
-        return false;
+        return false; // merge possible -> moves possible
       }
     }
   }
-  return true;
+  return true; // grid full AND no merges -> game over
 }
 
 function move(direction) {
@@ -148,7 +150,8 @@ function move(direction) {
 
   updateInstability(state);
 
-  if (noMovesLeft()) {
+  // check for game over after the move
+  if (state.energy <= 0 || noMovesLeft()) {
     state.gameOver = true;
   }
 }
