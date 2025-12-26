@@ -4,16 +4,22 @@ export function render(state, canvas) {
   const ctx = canvas.getContext('2d');
 
   const size = GRID_SIZE * TILE_SIZE + GAP * (GRID_SIZE + 1);
-  if (canvas.width !== size) {
-    canvas.width = size;
-    canvas.height = size;
+  const dpr = window.devicePixelRatio || 1;
+
+  // --- DPR-safe canvas sizing (THIS FIXES BLUR) ---
+  if (canvas.width !== size * dpr) {
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, size, size);
 
   // background
   ctx.fillStyle = '#121528';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, size, size);
 
   drawTiles(ctx, state);
   updateEnergyBar(state);
@@ -34,13 +40,15 @@ function drawTiles(ctx, state) {
 
     ctx.save();
 
-    const pulse = 1 + tile.mergePulse * 0.15;
+    const pulse = 1 + tile.mergePulse * 0.12;
     const wobble = tile.unstable
-      ? Math.sin(performance.now() / 200) * 0.04
+      ? Math.sin(performance.now() / 220) * 0.03
       : 0;
 
+    const scale = pulse + wobble;
+
     ctx.translate(x + TILE_SIZE / 2, y + TILE_SIZE / 2);
-    ctx.scale(pulse + wobble, pulse + wobble);
+    ctx.scale(scale, scale);
     ctx.translate(-TILE_SIZE / 2, -TILE_SIZE / 2);
 
     ctx.fillStyle = tile.unstable ? '#4b5c7f' : '#1e2235';
@@ -48,8 +56,9 @@ function drawTiles(ctx, state) {
     ctx.shadowColor = 'rgba(0,0,0,0.35)';
     roundRect(ctx, 0, 0, TILE_SIZE, TILE_SIZE, 12);
 
+    // CRISP text
     ctx.fillStyle = '#e6e9ef';
-    ctx.font = `500 ${TILE_SIZE * 0.36}px JetBrains Mono`;
+    ctx.font = '500 22px "JetBrains Mono"';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(tile.value, TILE_SIZE / 2, TILE_SIZE / 2);
