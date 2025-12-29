@@ -1,0 +1,25 @@
+name: Update Commit Hash
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  update-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get latest commit hash
+        id: hash
+        run: echo "HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Update index.html
+        run: |
+          sed -i "s/BUILD/${HASH}/g" index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Update commit hash to $HASH"
+          git push

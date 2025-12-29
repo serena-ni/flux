@@ -12,17 +12,19 @@
 <body>
   <div id="app">
     <header>
-      <h1>Flux</h1>
+      <h1>flux</h1>
       <p class="subtitle">an energy-based sliding puzzle</p>
       <div id="energy-bar"><div id="energy-fill"></div></div>
       <div id="energy-label">energy</div>
     </header>
 
+    <!-- canvas grid -->
     <canvas id="game"></canvas>
 
-    <footer>
-      <p>manage growth. prevent collapse.</p>
-    </footer>
+    <!-- GitHub commit smart chip -->
+    <div id="smart-chip">
+      <a href="https://github.com/serena-ni/flux" target="_blank">GitHub</a> | commit: <span id="commit-hash">BUILD</span>
+    </div>
   </div>
 
   <button id="info-btn">i</button>
@@ -33,10 +35,10 @@
       <p>slide tiles using arrow keys or swipe. merge tiles of the same value to grow them. each move consumes energy. merges restore energy (+2 per merge). avoid running out of energy!</p>
       <ul>
         <li><strong>move:</strong> arrow keys or swipe</li>
-        <li><strong>combine:</strong> merge same-value tiles</li>
-        <li><strong>energy:</strong> moves cost 0.5, merges gain 2</li>
-        <li><strong>unstable:</strong> tiles ≥128 become unstable</li>
-        <li><strong>goal:</strong> grow tiles without losing all energy</li>
+        <li><strong>combine:</strong> merge same-value tiles</li><br>
+        <li>moves cost 0.5, merges gain 2</li>
+        <li>tiles ≥ 128 become unstable</li>
+        <li>grow tiles without losing all energy</li>
       </ul>
       <button id="close-info">close</button>
     </div>
@@ -51,16 +53,36 @@
   </div>
 
   <script type="module">
-    import { state, reset, moveTiles } from './src/state.js';
+    import { state, reset, moveTiles, move } from './src/state.js';
     import { render } from './src/render.js';
     import { initInput } from './src/input.js';
     import { initInfo } from './info.js';
+    import { setCommitHash } from './src/commit.js';
 
-    const canvas = document.getElementById('game');
+    // set commit hash (replace BUILD with real hash via GitHub Actions)
+    setCommitHash('BUILD');
 
     reset();
     initInput();
     initInfo();
+
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      const headerHeight = document.querySelector('header').offsetHeight;
+      const chipHeight = document.getElementById('smart-chip').offsetHeight;
+      const padding = 32;
+      const availableHeight = window.innerHeight - headerHeight - chipHeight - padding;
+      const availableWidth = window.innerWidth - padding;
+      const size = Math.min(availableWidth, availableHeight);
+
+      canvas.width = size;
+      canvas.height = size;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     function loop() {
       moveTiles();
