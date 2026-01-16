@@ -1,3 +1,3 @@
 export function getCommitHash() {
-  return 'BUILD';
+  return 'abc1234'; // temporary test value
 }
